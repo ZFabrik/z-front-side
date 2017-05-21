@@ -1,0 +1,16 @@
+body {
+  margin: 0px;
+}
+.ztoolbar {
+  padding:5px;
+  background-color: #dedede;
+  height: 22px;
+}
+.ztoolbar button {
+  margin-right: 5px;
+  background-color: #f0f0f0;
+  border: 2px solid #ffffff;
+}
+.flex_body .etabs-views {
+  height: calc(100vh - 65px);
+}
