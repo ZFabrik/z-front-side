@@ -16,6 +16,8 @@ It is supposed to have as little features as possible. It does however
 * a context menu to copy URLs
 * handling of external URLs in external browser.
 
+It does not yet have a basic-auth popup (https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-login)
+
 # How-To Install
 
 Basically it is clone, build, run:
