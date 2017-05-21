@@ -108,7 +108,7 @@ addButton(toolbar,"&lt;&lt;back",()=>{
 // config button
 
 addButton(toolbar,"cfg",()=>{
-  electron.shell.openExternal("file://"+mainConfig.configFile);  
+  electron.shell.openItem(mainConfig.configFile);  
 },"right");
 
 // --------------------
