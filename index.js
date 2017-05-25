@@ -41,6 +41,55 @@ ipcRenderer.on('initialize', (event,config) => {
   });
 });
 
+// modal
+function showModal() {
+  document.getElementById('modal').style.display = "block";
+}
+
+function hideModal() {
+  document.getElementById('modal').style.display = "none";
+}
+
+//
+// handling of login
+//
+
+// a key identifying the current login
+var loginKey;
+// the main sends us a request to get login data
+ipcRenderer.on('get-login-auth', (event,key,request,authInfo) => {
+  loginKey = key;
+  showLogin(request,authInfo);
+});
+
+function showLogin(request,authInfo) {
+  showModal();
+  document.getElementById('login_popup').style.display = "block";
+  document.getElementById('login_info').innerHTML=escape(request.host);
+}
+
+function hideLogin() {
+  loginKey=null;
+  hideModal();
+  document.getElementById('login_popup').style.display = "none";
+  document.getElementById('login_password').value='';
+}
+
+// to confirm login
+module.exports.onLoginOk=() => {
+  var userNameField = document.getElementById('login_username');
+  var passwordField = document.getElementById('login_password');
+  // send back to main
+  ipcRenderer.send('set-login-auth',loginKey,userNameField.value,passwordField.value);
+  // clear
+  hideLogin();
+};
+// to cancel login
+module.exports.onLoginCancel=() => {
+  // ipcRenderer.send('cancel-login-auth',loginKey);
+  hideLogin();
+};
+
 // this only after config has been passed, i.e. when main tells us to init.
 function initialize() {
 
@@ -108,7 +157,7 @@ addButton(toolbar,"&lt;&lt;back",()=>{
 // config button
 
 addButton(toolbar,"cfg",()=>{
-  electron.shell.openItem(mainConfig.configFile);  
+  electron.shell.openItem(mainConfig.configFile);
 },"right");
 
 // --------------------
@@ -124,9 +173,14 @@ function addButton(toolbar,title,addFn,float) {
 }
 function addTab(title,src, attributes) {
 
+  // default attributes for every inner webview:
+  // the same partition (!), plugins and popups allowed.
   var wva = {
-    partition:mainConfig.partition
+    partition:mainConfig.partition,
+    plugins:true,
+    allowpopups:true
   };
+  // mix-in more attributes, if specified.
   if (attributes) {
     // copy
     for (var p in attributes) {
@@ -138,10 +192,6 @@ function addTab(title,src, attributes) {
     title: title,
     src: src,
     visible: true,
-    /*
-    for the web view in the tab make sure that
-    * it uses the same partition
-    */
     webviewAttributes: wva
   });
   if (activate) {
@@ -170,9 +220,12 @@ function addTab(title,src, attributes) {
       label:'copy document link',
       click: ()=>{electron.clipboard.writeText(tab.webview.src);}
     },{
-      label:'open in browser',
+      label:'open in external browser',
       visible: params.linkURL != null,
       click: ()=>{electron.shell.openExternal(params.linkURL);}
+    },{
+      label:'print',
+      click: ()=>{tab.webview.print();}
     }]
   });
   return tab;

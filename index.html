@@ -16,9 +16,23 @@
   </div>
   <div class="etabs-views"></div>
 </div>
+<!-- supporting html for modal overlay -->
+<div id="modal" class="modal"/>
+<!-- supporting html for login overlay -->
+<div id="login_popup">
+  <h2>Authentication required</h2>
+  <p id="login_info"></p>
+  <form>
+  <table border="0" cellspacing="1">
+    <tr><td>Username:</td><td><input type="text" id="login_username"/></td></tr>
+    <tr><td>Password:</td><td><input type="password" id="login_password"/></td></tr>
+    <tr><td  colspan=2><button type="submit" id="login_ok" onclick="index.onLoginOk();return false;">ok</button><button id="login_cancel" onclick="index.onLoginCancel()">cancel</button></td></tr>
+  </table>
+  </form>
+</div>
 </body>
 <script>
   // You can also require other files to run in this process
-  require('./index.js')
+  const index = require('./index.js')
 </script>
 </html>

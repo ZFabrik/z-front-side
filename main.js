@@ -51,6 +51,42 @@ app.on('activate', () => {
   }
 })
 
+// handling of basic auth
+// map of pending logins
+var pendingLogins = {};
+
+app.on('login', (event, webContents, request, authInfo, callback) => {
+  // note: We need to open a window, ask for login data and
+  // finally call back to continue.
+  // we leave this to the renderer after memorizing the callback
+  var r = JSON.stringify(request);
+
+  if (pendingLogins[r]!=null) {
+    // it's a retry without an attempt to supply login data. Means, it was cancelled.
+    delete pendingLogins[r];
+    // let the default rule
+  } else {
+    // memorizing callback
+    pendingLogins[r]=callback;
+    // start login with renderer
+    win.webContents.send('get-login-auth',r,authInfo);
+    // make sure it is not rejected
+    event.preventDefault()
+    // wait...
+  }
+});
+
+// callback from renderer to complete login
+ipcMain.on('set-login-auth',(event,r,userName,password) => {
+  var cb = pendingLogins[r];
+  delete pendingLogins[r];
+  if (cb) {
+    cb(userName,password);
+  }
+});
+
+// end login handling
+
 // reload upon call from child
 ipcMain.on('reload', (event, arg) => {
   console.log("reloading...")
