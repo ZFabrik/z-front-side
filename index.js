@@ -3,6 +3,7 @@ const dragula = require("dragula")
 const electron = require('electron')
 const contextMenu = require('electron-context-menu')
 const loadJsonFile = require('load-json-file')
+const jsStringEscape = require('js-string-escape')
 
 // build toolbar
 
@@ -26,7 +27,7 @@ ipcRenderer.on('initialize', (event,config) => {
 //  console.log("received config "+JSON.stringify(config));
   // partitionSpan.innerHTML="("+config.partition+") &nbsp;";
   // set title
-  document.title = 'zshell'+(config.partition!=null? ' ('+config.partition+')':'');
+  document.title = 'zshell'+(config.partition!=null? ' ('+jsStringEscape(config.partition)+')':'');
 
   // read the config
   console.log("Loading config "+config.configFile);
@@ -65,7 +66,7 @@ ipcRenderer.on('get-login-auth', (event,key,request,authInfo) => {
 function showLogin(request,authInfo) {
   showModal();
   document.getElementById('login_popup').style.display = "block";
-  document.getElementById('login_info').innerHTML=escape(request.host);
+  document.getElementById('login_info').innerHTML=jsStringEscape(request.url);
 }
 
 function hideLogin() {

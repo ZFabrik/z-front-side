@@ -69,7 +69,7 @@ app.on('login', (event, webContents, request, authInfo, callback) => {
     // memorizing callback
     pendingLogins[r]=callback;
     // start login with renderer
-    win.webContents.send('get-login-auth',r,authInfo);
+    win.webContents.send('get-login-auth',r,request,authInfo);
     // make sure it is not rejected
     event.preventDefault()
     // wait...
