@@ -32,6 +32,12 @@ Basically it is clone, build, run:
 
 Obviously you need to have node / npm installed (http://blog.npmjs.org/post/85484771375/how-to-install-npm)
 
+E.g. on ubuntu run 
+
+```
+sudo apt-get install npm nodejs-legacy
+```
+
   
 # Parameters
 
