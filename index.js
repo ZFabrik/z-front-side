@@ -65,21 +65,21 @@ ipcRenderer.on('get-login-auth', (event,key,request,authInfo) => {
 
 function showLogin(request,authInfo) {
   showModal();
-  document.getElementById('login_popup').style.display = "block";
-  document.getElementById('login_info').innerHTML=jsStringEscape(request.url);
+  getLoginPopup().style.display = "block";
+  getLoginInfo().innerHTML=jsStringEscape(request.url);
 }
 
 function hideLogin() {
   loginKey=null;
   hideModal();
-  document.getElementById('login_popup').style.display = "none";
-  document.getElementById('login_password').value='';
+  getLoginPopup().style.display = "none";
+  getLoginPasswordField().value='';
 }
 
 // to confirm login
 module.exports.onLoginOk=() => {
-  var userNameField = document.getElementById('login_username');
-  var passwordField = document.getElementById('login_password');
+  var userNameField = getLoginUserNameField();
+  var passwordField = getLoginPasswordField();
   // send back to main
   ipcRenderer.send('set-login-auth',loginKey,userNameField.value,passwordField.value);
   // clear
@@ -90,6 +90,21 @@ module.exports.onLoginCancel=() => {
   // ipcRenderer.send('cancel-login-auth',loginKey);
   hideLogin();
 };
+
+function getLoginPopup() {
+  return document.getElementById('login_popup');
+}
+function getLoginInfo() {
+  return document.getElementById('login_info');
+}
+function getLoginUserNameField() {
+  return document.getElementById('login_username');
+}
+function getLoginPasswordField() {
+  return document.getElementById('login_password');
+}
+
+// end login handling
 
 // this only after config has been passed, i.e. when main tells us to init.
 function initialize() {
