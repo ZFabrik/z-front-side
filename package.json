@@ -1,8 +1,8 @@
 {
-  "name": "zshell",
+  "name": "z-front",
   "version": "0.1.0",
   "main": "main.js",
-  "description": "z disciplined application browser",
+  "description": "z disciplined application browser shell",
   "dependencies": {
     "dragula": "^3.7.2",
     "electron-context-menu": "^0.9.0",

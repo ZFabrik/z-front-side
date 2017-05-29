@@ -108,7 +108,7 @@ function initialize() {
   win = new BrowserWindow({
     width: 1024,
     height: 600,
-    icon:'zshell.png',
+    icon:'z-front.png',
     webPreferences: {
       partition:partition
     }

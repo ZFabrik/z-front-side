@@ -27,13 +27,13 @@ ipcRenderer.on('initialize', (event,config) => {
 //  console.log("received config "+JSON.stringify(config));
   // partitionSpan.innerHTML="("+config.partition+") &nbsp;";
   // set title
-  document.title = 'zshell'+(config.partition!=null? ' ('+jsStringEscape(config.partition)+')':'');
+  document.title = 'z-front'+(config.partition!=null? ' ('+jsStringEscape(config.partition)+')':'');
 
   // read the config
   console.log("Loading config "+config.configFile);
   loadJsonFile(config.configFile).then(config => {
     if (config.content==null) {
-      config.content=[{button:"google",tabTitle:"google",url:"https://mail.google.com", preload: 0 }];
+      config.content=[{button:"google",tabTitle:"google",url:"https://www.google.com", preload: 0 }];
     }
     // merge in main config
     mainConfig.content=config.content;
