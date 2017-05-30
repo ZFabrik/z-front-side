@@ -1,4 +1,4 @@
-# z-front
+# z-front-side
 
 A simple browser shell to manage web apps in a native wrapper based on electron. This is not a browser replacement, but rather a "native-web-app" enabler so that 
 
@@ -24,8 +24,8 @@ It does not yet have a basic-auth popup (https://github.com/electron/electron/bl
 Basically it is clone, build, run:
 
 ```
-  git clone https://github.com/ZFabrik/z-front.git
-  cd z-front
+  git clone https://github.com/ZFabrik/z-front-side.git
+  cd z-front-side
   npm install
   node_modules/.bin/electron . --config ./sample_config.json
 ```

@@ -27,7 +27,7 @@ ipcRenderer.on('initialize', (event,config) => {
 //  console.log("received config "+JSON.stringify(config));
   // partitionSpan.innerHTML="("+config.partition+") &nbsp;";
   // set title
-  document.title = 'z-front'+(config.partition!=null? ' ('+jsStringEscape(config.partition)+')':'');
+  document.title = 'z-front-side'+(config.partition!=null? ' ('+jsStringEscape(config.partition)+')':'');
 
   // read the config
   console.log("Loading config "+config.configFile);
