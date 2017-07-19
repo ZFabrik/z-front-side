@@ -2,7 +2,7 @@ const TabGroup = require("electron-tabs")
 const dragula = require("dragula")
 const electron = require('electron')
 const contextMenu = require('electron-context-menu')
-const loadJsonFile = require('load-json-file')
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          const loadJsonFile = require('load-json-file')
 const jsStringEscape = require('js-string-escape')
 
 // build toolbar
@@ -124,7 +124,7 @@ function initialize() {
   for (var key in Object.keys(preloads).sort()) {
     var content = preloads[key];
     if (content) {
-      var tab = addTab(content.tabTitle,content.url);
+      var tab = addTab(content.tabTitle,content.url, content.attributes);
       if (first) {
         tab.activate();
         first = false;
@@ -137,7 +137,7 @@ function initialize() {
 
 // in order to resolve the unwrap the closure!
 function createTabFunction(content) {
-  return ()=>{addTab(content.tabTitle,content.url)};
+  return ()=>{addTab(content.tabTitle,content.url, content.attributes)};
 }
 
 // -------------------- pre-init setup --------------

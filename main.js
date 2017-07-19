@@ -102,6 +102,13 @@ ipcMain.on('reload', (event, arg) => {
   }
 })
 
+// ignore certificate errors
+app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
+    // Verification logic.
+    event.preventDefault()
+    callback(true)
+})
+
 function initialize() {
   console.log('initialize')
   // Create the browser window.
