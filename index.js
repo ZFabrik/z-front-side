@@ -121,7 +121,9 @@ function initialize() {
 
   // create initially loaded tabs
   var first=true;
-  for (var key in Object.keys(preloads).sort()) {
+  var keys = Object.keys(preloads).sort();
+  for (var x in keys) {
+    var key = keys[x];
     var content = preloads[key];
     if (content) {
       var tab = addTab(content.tabTitle,content.url, content.attributes);
