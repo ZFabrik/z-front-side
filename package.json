@@ -1,16 +1,16 @@
 {
-  "name": "z-front-side",
-  "version": "0.1.0",
-  "main": "main.js",
-  "description": "z disciplined application browser shell",
-  "dependencies": {
-    "dragula": "^3.7.2",
-    "electron-context-menu": "^0.9.0",
-    "electron-prebuilt": "^1.4.13",
-    "electron-tabs": "~0.6.0",
-    "js-string-escape": "~1.0.1"
-  },
-  "devDependencies": {
-    "electron-packager": "^8.7.0"
-  }
+ "name": "z-front-side",
+ "version": "0.1.0",
+ "main": "main.js",
+ "description": "z disciplined application browser shell",
+ "dependencies": {
+   "dragula": "^3.7.2",
+   "electron-context-menu": "^0.9.0",
+   "electron-tabs": "~0.7.1",
+   "js-string-escape": "~1.0.1"
+ },
+ "devDependencies": {
+   "electron": "^1.6.11",
+   "electron-packager": "^8.7.0"
+ }
 }
