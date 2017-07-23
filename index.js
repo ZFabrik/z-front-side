@@ -1,6 +1,7 @@
 const TabGroup = require("electron-tabs")
 const dragula = require("dragula")
 const electron = require('electron')
+const {BrowserWindow} = require('electron')
 const contextMenu = require('electron-context-menu')
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           const loadJsonFile = require('load-json-file')
 const jsStringEscape = require('js-string-escape')
@@ -29,17 +30,22 @@ ipcRenderer.on('initialize', (event,config) => {
   // set title
   document.title = 'z-front-side'+(config.partition!=null? ' ('+jsStringEscape(config.partition)+')':'');
 
-  // read the config
-  console.log("Loading config "+config.configFile);
-  loadJsonFile(config.configFile).then(config => {
-    if (config.content==null) {
-      config.content=[{button:"google",tabTitle:"google",url:"https://www.google.com", preload: 0 }];
-    }
-    // merge in main config
-    mainConfig.content=config.content;
-    // initialize
+  // config may be specified by file or inline (for open in window)
+  if (config.content!=null) {
     initialize();
-  });
+  } else {
+    // read the config
+    console.log("Loading config "+config.configFile);
+    loadJsonFile(config.configFile).then(config => {
+      if (config.content==null) {
+        config.content=[{button:"google",tabTitle:"google",url:"https://www.google.com", preload: 0 }];
+      }
+      // merge in main config
+      mainConfig.content=config.content;
+      // initialize
+      initialize();
+    });
+  }
 });
 
 // modal
@@ -113,7 +119,9 @@ function initialize() {
   var preloads={};
   for (var i in mainConfig.content) {
     var content = mainConfig.content[i];
-    addButton(toolbar,content.button,createTabFunction(content));
+    if (content.button!=null) {
+      addButton(toolbar,content.button,createTabFunction(content));
+    }
     if (content.preload!=null) {
       preloads[content.preload]=content;
     }
@@ -218,7 +226,18 @@ function addTab(title,src, attributes) {
 
   // allow opening links in external browser
   tab.webview.addEventListener('new-window', (e) => {
-    electron.shell.openExternal(e.url);
+
+    // we tell main to open a new instance, same partition, one url
+    ipcRenderer.send('open-in-window', e);
+/*
+    var win = new BrowserWindow({
+      webPreferences: {
+        partition:mainConfig.partition
+      }
+    });
+    win.loadURL(e.url);
+*/
+//    electron.shell.openExternal(e.url);
   });
   // loading indicator
   tab.webview.addEventListener('did-start-loading', checkLoad);

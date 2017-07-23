@@ -94,6 +94,34 @@ ipcMain.on('set-login-auth',(event,r,userName,password) => {
 
 // end login handling
 
+// open link in window happens by open the index.html
+// and sending some non-file stored config.
+ipcMain.on('open-in-window',(event,config) => {
+  console.log('open-in-window: '+JSON.stringify(config))
+
+  var options = config.options;
+  if (options.webPreferences!=null) {
+    options.webPreferences.partition=partition;
+  } else {
+    options.webPreferences={partition:partition}
+  }
+  var win = new BrowserWindow(options);
+
+  // tell the browser window to initialize
+  win.webContents.on('did-finish-load', ()=>{
+    console.log('did-finish-load')
+    /*
+    Pass config to renderer which will initialize after receiving
+    */
+    win.webContents.send('initialize', {
+      content: [{ url: config.url, tabTitle:"external", preload:"1" }],
+      partition:partition
+    });
+  });
+
+  loadIndexHtml(win);
+});
+
 // reload upon call from child
 ipcMain.on('reload', (event, arg) => {
   console.log("reloading...")
@@ -127,12 +155,7 @@ function initialize() {
     configFile=path.dirname(process.execPath)+'/default.json';
   }
 
-  // load the index.html of the app.
-  win.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
+  loadIndexHtml(win);
 
   // tell the browser window to initialize
   win.webContents.on('did-finish-load', ()=>{
@@ -158,4 +181,13 @@ function initialize() {
     win = null
   })
 
+}
+
+function loadIndexHtml(win) {
+  // load the index.html of the app.
+  win.loadURL(url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
 }
