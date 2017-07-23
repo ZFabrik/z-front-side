@@ -109,8 +109,14 @@ function getLoginUserNameField() {
 function getLoginPasswordField() {
   return document.getElementById('login_password');
 }
-
 // end login handling
+
+// maximize handling for single tab view
+function hideTabGroupButtons() {
+  document.getElementById('etabs-buttons').style.display="none";
+  var view = document.getElementById('etabs-views');
+  view.className += " maximizedtab";
+}
 
 // this only after config has been passed, i.e. when main tells us to init.
 function initialize() {
@@ -136,6 +142,10 @@ function initialize() {
     if (content) {
       var tab = addTab(content.tabTitle,content.url, content.attributes);
       if (first) {
+        if (content.maximize) {
+          // maximize by hiding the tab buttons
+          hideTabGroupButtons();
+        }
         tab.activate();
         first = false;
       }
@@ -226,18 +236,8 @@ function addTab(title,src, attributes) {
 
   // allow opening links in external browser
   tab.webview.addEventListener('new-window', (e) => {
-
     // we tell main to open a new instance, same partition, one url
     ipcRenderer.send('open-in-window', e);
-/*
-    var win = new BrowserWindow({
-      webPreferences: {
-        partition:mainConfig.partition
-      }
-    });
-    win.loadURL(e.url);
-*/
-//    electron.shell.openExternal(e.url);
   });
   // loading indicator
   tab.webview.addEventListener('did-start-loading', checkLoad);

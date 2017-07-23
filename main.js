@@ -114,7 +114,7 @@ ipcMain.on('open-in-window',(event,config) => {
     Pass config to renderer which will initialize after receiving
     */
     win.webContents.send('initialize', {
-      content: [{ url: config.url, tabTitle:"external", preload:"1" }],
+      content: [{ url: config.url, tabTitle:"external", maximize:true, preload:"1" }],
       partition:partition
     });
   });
