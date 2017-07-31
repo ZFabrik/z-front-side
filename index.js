@@ -261,6 +261,10 @@ function addTab(title,src, attributes) {
       visible: params.linkURL != null,
       click: ()=>{electron.shell.openExternal(params.linkURL);}
     },{
+      label:'open in new tab',
+      visible: params.linkURL != null,
+      click: ()=>{addTab(title, params.linkURL, attributes);}
+    },{
       label:'print',
       click: ()=>{tab.webview.print();}
     }]
