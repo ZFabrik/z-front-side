@@ -6,6 +6,13 @@ const contextMenu = require('electron-context-menu')
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           const loadJsonFile = require('load-json-file')
 const jsStringEscape = require('js-string-escape')
 
+// Retrieve the electron in page search module
+const searchInPage = require('electron-in-page-search').default;
+const remote = require('electron').remote;
+// // or
+// // import searchInPage from 'electron-in-page-search';
+//
+
 // build toolbar
 
 var toolbar = document.getElementsByClassName('ztoolbar')[0];
@@ -247,6 +254,15 @@ function addTab(title,src, attributes) {
   tab.webview.addEventListener('destroyed',checkLoad);
   tab.webview.addEventListener('crashed',checkLoad);
   tab.webview.addEventListener('close',checkLoad);
+  // add CTRL-F event to search
+  tab.webview.addEventListener("keydown", (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.keyCode === 70) {
+
+                searchInPage(tab.webview).openSearchWindow();
+            }
+        }, false);
+
+
   // set context menu
   contextMenu({
     window:tab.webview,
