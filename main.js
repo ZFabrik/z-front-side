@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
+const PDFWindow = require('electron-pdf-window')
 const path = require('path')
 const url = require('url')
 
@@ -100,12 +101,18 @@ ipcMain.on('open-in-window',(event,config) => {
   console.log('open-in-window: '+JSON.stringify(config))
 
   var options = config.options;
-  if (options.webPreferences!=null) {
-    options.webPreferences.partition=partition;
-  } else {
-    options.webPreferences={partition:partition}
+
+  if (options==null) {
+    options={};
   }
+  if (options.webPreferences==null) {
+    options.webPreferences = {};
+  }
+
   var win = new BrowserWindow(options);
+
+  // add pdf support
+  PDFWindow.addSupport(win)
 
   // tell the browser window to initialize
   win.webContents.on('did-finish-load', ()=>{

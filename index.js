@@ -3,8 +3,9 @@ const dragula = require("dragula")
 const electron = require('electron')
 const {BrowserWindow} = require('electron')
 const contextMenu = require('electron-context-menu')
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          const loadJsonFile = require('load-json-file')
+const loadJsonFile = require('load-json-file')
 const jsStringEscape = require('js-string-escape')
+const PDFWindow = require('electron-pdf-window')
 
 // Retrieve the electron in page search module
 const searchInPage = require('electron-in-page-search').default;
@@ -243,9 +244,27 @@ function addTab(title,src, attributes) {
 
   // allow opening links in external browser
   tab.webview.addEventListener('new-window', (e) => {
-    // we tell main to open a new instance, same partition, one url
-    ipcRenderer.send('open-in-window', e);
+   console.log('open-in-window: '+JSON.stringify(e))
+
+    // some defaults that may be risky!
+    var options={
+      webPreferences: {}
+    }
+    options.webPreferences.partition = mainConfig.partition;
+    options.webPreferences.plugins = true;
+    options.webPreferences.nodeIntegration = true;
+
+
+    if ("foreground-tab"==e.disposition || "background-tab"==e.disposition) {
+      // handle as tab
+      addTab(title, e.url, options.webPreferences);
+    } else {
+      // we tell main to open a new instance
+      ipcRenderer.send('open-in-window', e, {options:options});
+    }
   });
+
+
   // loading indicator
   tab.webview.addEventListener('did-start-loading', checkLoad);
   tab.webview.addEventListener('did-stop-loading', checkLoad);
@@ -261,7 +280,6 @@ function addTab(title,src, attributes) {
                 searchInPage(tab.webview).openSearchWindow();
             }
         }, false);
-
 
   // set context menu
   contextMenu({
