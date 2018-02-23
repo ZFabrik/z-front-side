@@ -285,6 +285,13 @@ function addTab(title,src, attributes) {
   contextMenu({
     window:tab.webview,
     append: (params,BrowserWindow)=>[{
+      label:'back',
+      click: ()=> { var tab = tabGroup.getActiveTab();
+                    if (tab!=null) {
+                        tab.webview.goBack();
+                    }
+                }
+    },{
       label:'reload',
       click: ()=>{tab.webview.reload();}
     },{
