@@ -156,6 +156,8 @@ function initialize() {
     }
   })
 
+
+
   // load config
 
   if (!configFile) {
