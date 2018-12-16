@@ -129,6 +129,16 @@ ipcMain.on('open-in-window',(event,config) => {
   loadIndexHtml(win);
 });
 
+//reload upon call from child
+ipcMain.on('open-dev-tools', (event, arg) => {
+  console.log("open-dev-tools")
+  if (win!=null) {
+    win.webContents.openDevTools();
+  }
+})
+
+
+
 // reload upon call from child
 ipcMain.on('reload', (event, arg) => {
   console.log("reloading...")
@@ -177,9 +187,6 @@ function initialize() {
       partition:partition
     });
   });
-
-  // Open the DevTools.
-  //win.webContents.openDevTools()
 
   // Emitted when the window is closed.
   win.on('closed', () => {

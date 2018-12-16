@@ -356,6 +356,14 @@ function addTab(title, src, attributes) {
         },
         {
           role: 'close'
+        },
+        {
+	      label: 'Open Dev Tools',
+	      accelerator: 'CmdOrCtrl+D',
+      	  role: 'openDevTools',
+          click() {
+      		ipcRenderer.send('open-dev-tools');
+          }
         }
       ]
     },
@@ -429,6 +437,14 @@ function addTab(title, src, attributes) {
         role: 'minimize'
       },
       {
+	    label: 'Open Dev Tools',
+	    accelerator: 'CmdOrCtrl+D',
+      	role: 'openDevTools',
+        click() {
+      		ipcRenderer.send('open-dev-tools');
+        } 
+      },
+      {
         label: 'Zoom',
         role: 'zoom'
       },
@@ -466,45 +482,50 @@ function addTab(title, src, attributes) {
   }, false);
 
   // set context menu
-  contextMenu({
-    window: tab.webview,
-    append: (params, BrowserWindow) => [{
-      label: 'back',
-      click: () => {
-        var tab = tabGroup.getActiveTab();
-        if (tab != null) {
-          tab.webview.goBack();
-        }
-      }
-    }, {
-      label: 'reload',
-      click: () => {
-        tab.webview.reload()
-      }
-    }, {
-      label: 'copy document link',
-      click: () => {
-        electron.clipboard.writeText(tab.webview.src);
-      }
-    }, {
-      label: 'open in external browser',
-      visible: params.linkURL != null,
-      click: () => {
-        electron.shell.openExternal(params.linkURL);
-      }
-    }, {
-      label: 'open in new tab',
-      visible: params.linkURL != null,
-      click: () => {
-        addTab(title, params.linkURL, attributes);
-      }
-    }, {
-      label: 'print',
-      click: () => {
-        tab.webview.print();
-      }
-    }]
-  });
+  var setContextMenu = function() {
+	  contextMenu({
+	    window: tab.webview,
+	    append: (params, BrowserWindow) => [{
+	      label: 'back',
+	      click: () => {
+	        var tab = tabGroup.getActiveTab();
+	        if (tab != null) {
+	          tab.webview.goBack();
+	        }
+	      }
+	    }, {
+	      label: 'reload',
+	      click: () => {
+	        tab.webview.reload()
+	      }
+	    }, {
+	      label: 'copy document link',
+	      click: () => {
+	        electron.clipboard.writeText(tab.webview.src);
+	      }
+	    }, {
+	      label: 'open in external browser',
+	      visible: params.linkURL != null,
+	      click: () => {
+	        electron.shell.openExternal(params.linkURL);
+	      }
+	    }, {
+	      label: 'open in new tab',
+	      visible: params.linkURL != null,
+	      click: () => {
+	        addTab(title, params.linkURL, attributes);
+	      }
+	    }, {
+	      label: 'print',
+	      click: () => {
+	        tab.webview.print();
+	      }
+	    }]
+	  });
+  };
+  tab.webview.addEventListener('did-finish-load', setContextMenu);
+
+  console.log('context menu initialized');
   return tab;
 }
 
