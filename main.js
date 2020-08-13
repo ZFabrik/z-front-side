@@ -31,6 +31,12 @@ var partition=args['partition'];
 var configFile=args['config'];
 
 //
+// Let's not claim we are electron - as Google will block us.
+//
+app.userAgentFallback = app.userAgentFallback.replace('Electron/' + process.versions.electron, '');
+
+
+//
 // standard wiring
 //
 app.on('ready', initialize)
@@ -110,7 +116,6 @@ ipcMain.on('open-in-window',(event,config) => {
   }
 
   var win = new BrowserWindow(options);
-
   // add pdf support
   PDFWindow.addSupport(win)
 
@@ -162,8 +167,10 @@ function initialize() {
     height: 600,
     icon:'z-front.png',
     webPreferences: {
-      partition:partition
-    }
+      partition:partition,
+      nodeIntegration: true,
+      webviewTag: true
+    },
   })
 
 
@@ -186,6 +193,7 @@ function initialize() {
       configFile:configFile,
       partition:partition
     });
+    console.log('sent config to web content')
   });
 
   // Emitted when the window is closed.

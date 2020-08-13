@@ -1,17 +1,16 @@
 const TabGroup = require("electron-tabs")
 const dragula = require("dragula")
 const electron = require('electron')
-const {
-  BrowserWindow
-} = require('electron')
+const { BrowserWindow } = require('electron')
 const contextMenu = require('electron-context-menu')
-const loadJsonFile = require('load-json-file')
 const jsStringEscape = require('js-string-escape')
 const PDFWindow = require('electron-pdf-window')
+const fs = require('fs');
+
 
 // Retrieve the electron in page search module
 const searchInPage = require('electron-in-page-search').default;
-const remote = require('electron').remote;
+const remote = electron.remote;
 // // or
 // // import searchInPage from 'electron-in-page-search';
 //
@@ -46,22 +45,23 @@ ipcRenderer.on('initialize', (event, config) => {
   } else {
     // read the config
     console.log("Loading config " + config.configFile);
-    loadJsonFile(config.configFile).then(config => {
-      if (config.content == null) {
-        config.content = [{
-          button: "google",
-          tabTitle: "google",
-          url: "https://www.google.com",
-          preload: 0
-        }];
-      }
-      // merge in main config
-      mainConfig.content = config.content;
-      // initialize
-      initialize();
-    });
+    var rawconfig = fs.readFileSync(config.configFile);
+    var config = JSON.parse(rawconfig);
+    if (config.content == null) {
+      config.content = [{
+        button: "google",
+        tabTitle: "google",
+        url: "https://www.google.com",
+        preload: 0
+      }];
+    }
+    // merge in main config
+    mainConfig.content = config.content;
+    // initialize
+    initialize();
   }
 });
+
 
 // modal
 function showModal() {
@@ -213,7 +213,7 @@ addButton(toolbar, "&lt;&lt;back", () => {
 // config button
 
 addButton(toolbar, "cfg", () => {
-  electron.shell.openItem(mainConfig.configFile);
+  electron.shell.openPath(mainConfig.configFile);
 }, "right");
 
 // --------------------
@@ -229,7 +229,6 @@ function addButton(toolbar, title, addFn, float) {
 }
 
 function addTab(title, src, attributes) {
-
   // default attributes for every inner webview:
   // the same partition (!), plugins and popups allowed.
   var wva = {
@@ -524,8 +523,7 @@ function addTab(title, src, attributes) {
 	  });
   };
   tab.webview.addEventListener('did-finish-load', setContextMenu);
-
-  console.log('context menu initialized');
+  console.log('tab '+title+' creation complete');
   return tab;
 }
 
